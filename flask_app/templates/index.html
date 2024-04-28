@@ -1,15 +1,10 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% extends "base.html" %}
 
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <title>Home</title>
-</head>
-<body>
+{% block title %}Home{% endblock %}
+
+{% block content %}
     <div class="container my-5">
-        <h1 class="text-center mb-4">NEXTFIX</h1>
+        <h1 class="text-center mb-4">FixItForums!</h1>
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
@@ -68,5 +63,4 @@
             {% endwith %}
         </div>
     </div>
-</body>
-</html>
+{% endblock %}
