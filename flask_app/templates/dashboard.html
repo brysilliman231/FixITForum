@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-3">
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <h1>Page Banner</h1>
+                <div>
+                    <a href="/logout" class="btn btn-secondary">Logout</a>
+                    <a href="/edit_profile" class="btn btn-info">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Guides</h2>
+            <input type="text" class="form-control mb-3" placeholder="Guide Search Bar">
+            <div class="list-group">
+                {% for guide in guides %}
+                <a href="{{ url_for('guide', id=guide.id) }}" class="list-group-item list-group-item-action">
+                    {{ guide.title }}
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-6">
+            <h2>Forums</h2>
+            <input type="text" class="form-control mb-3" placeholder="Forum Search Bar">
+            <div class="list-group">
+                <!-- Loop through forums in the database and insert here -->
+                <a href="#" class="list-group-item list-group-item-action">Forum 1</a>
+                <a href="#" class="list-group-item list-group-item-action">Forum 2</a>
+                <!-- More forums -->
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
