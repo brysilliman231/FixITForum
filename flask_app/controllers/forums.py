@@ -4,13 +4,12 @@ from flask_app.models.forum import Forum
 
 @app.route('/forums')
 def forums():
-    # Ensure the user is logged in
     if 'user_id' not in session:
         flash('Please log in to view the forums.')
         return redirect('/')
 
-    all_forums = Forum.get_all_forums()
-    return render_template('forums.html', all_forums=all_forums)
+    forums = Forum.get_all_forums_with_creators()
+    return render_template('forums.html', forums=forums)
 
 @app.route('/make_forum', methods=['GET', 'POST'])
 def make_forum():

@@ -4,13 +4,12 @@ from flask_app.models.guide import Guide
 
 @app.route('/guides')
 def guides():
-    # Ensure the user is logged in
     if 'user_id' not in session:
         flash('Please log in to view the guides.')
         return redirect('/')
 
-    all_guides = Guide.get_all_guides()
-    return render_template('guides.html', all_guides=all_guides)
+    guides = Guide.get_all_guides_with_creators()
+    return render_template('guides.html', guides=guides)
 
 @app.route('/make_guide', methods=['GET', 'POST'])
 def make_guide():
