@@ -7,12 +7,13 @@ class Guide:
         self.content = data['content']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
+        self.user_id = data['user_id']
         # Assume there are other attributes as needed
 
     @classmethod
     def get_all_guides(cls):
         query = "SELECT * FROM guides;"
-        results = connectToMySQL('your_db_name').query_db(query)
+        results = connectToMySQL('fixit').query_db(query)
         guides = []
         for guide in results:
             guides.append(cls(guide))
@@ -20,7 +21,7 @@ class Guide:
 
     @classmethod
     def save(cls, data):
-        query = "INSERT INTO guides (title, content, created_at, updated_at) VALUES (%(title)s, %(content)s, NOW(), NOW());"
-        return connectToMySQL('your_db_name').query_db(query, data)
+        query = "INSERT INTO guides (title, content, user_id, created_at, updated_at) VALUES (%(title)s, %(content)s, NOW(), NOW());"
+        return connectToMySQL('fixit').query_db(query, data)
     
     # Additional class methods as needed for updating, deleting, etc.
