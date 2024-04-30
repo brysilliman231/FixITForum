@@ -4,7 +4,7 @@ from flask_app.models.guide import Guide
 from flask_app import app
 from flask import render_template, request, session, redirect, flash
 from flask_bcrypt import Bcrypt
-
+import logging
 bcrypt = Bcrypt(app)
 
 @app.route('/')
@@ -15,6 +15,11 @@ def index():
     else:
         # If a user is logged in, redirect to the dashboard or another appropriate page
         return redirect('/dashboard')
+    
+@app.route('/')
+def index():
+    logging.debug(f"Current session state: {session}")
+    return "Welcome to the Index Page"
 
 @app.route('/dashboard')
 def dashboard():
@@ -27,6 +32,22 @@ def dashboard():
     forums = Forum.get_all_forums()  # replace with actual database call
     
     return render_template('dashboard.html', guides=guides, forums=forums)
+
+@app.route('/profile/<int:user_id>')
+def profile(user_id):
+    if 'user_id' not in session or session['user_id'] != user_id:
+        flash("You are not authorized to view this page.")
+        return redirect('/login')
+    
+    user = User.get_by_id({'id': user_id})
+    if not user:
+        flash("User not found.")
+        return redirect('/dashboard')
+    
+    return render_template('profile.html', user=user)
+
+
+
 @app.route("/register", methods=["POST"])
 def register():
     # Validate user input
@@ -80,3 +101,29 @@ def login():
     session['user_id'] = user_in_db.id
     
     return redirect('/dashboard')
+
+@app.route('/logout')
+def logout():
+    session.clear()  # This clears the session, logging the user out
+    flash("You have been logged out successfully.")
+    return redirect('/index')  #
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    if 'user_id' not in session:
+        flash("Please log in to view this page.")
+        return redirect('/login')
+
+    if request.method == 'POST':
+        user_data = {
+            "id": session['user_id'],
+            "first_name": request.form['first_name'],
+            "last_name": request.form['last_name'],
+            "email": request.form['email']
+        }
+        User.update(user_data)
+        flash("Your profile has been updated.")
+        return redirect('/dashboard')
+
+    user = User.get_by_id({'id': session['user_id']})  # Assuming there's a method to fetch user by ID
+    return render_template('edit_profile.html', user=user)

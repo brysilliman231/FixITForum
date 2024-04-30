@@ -27,6 +27,19 @@ class User:
             return False
         return cls(results[0])
     
+    @classmethod
+    def get_by_id(cls, data):
+        query = "SELECT * FROM users WHERE id = %(id)s;"
+        results = connectToMySQL('fixit').query_db(query, data)
+        if not results:
+            return None
+        return cls(results[0])
+    
+    @classmethod
+    def update(cls, data):
+        query = "UPDATE users SET first_name=%(first_name)s, last_name=%(last_name)s, email=%(email)s WHERE id=%(id)s;"
+        return connectToMySQL('fixit').query_db(query, data)
+
 
     @staticmethod
     def validate_user_login(user):

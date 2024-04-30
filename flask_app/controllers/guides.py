@@ -5,9 +5,7 @@ from flask_app.models.guide import Guide
 @app.route('/guides')
 def guides():
     if 'user_id' not in session:
-        flash('Please log in to view the guides.')
-        return redirect('/')
-
+        return redirect('/login')  # Ensure the user is logged in
     guides = Guide.get_all_guides_with_creators()
     return render_template('guides.html', guides=guides)
 

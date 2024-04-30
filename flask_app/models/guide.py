@@ -7,8 +7,9 @@ class Guide:
         self.content = data['content']
         self.created_at = data['created_at']
         self.updated_at = data['updated_at']
-        self.user_id = data['user_id']
-        # Assume there are other attributes as needed
+        self.user_id = data['user_id']  # Foreign key linking to the user
+        self.creator_first_name = data.get('first_name')  # Optional: creator's first name
+        self.creator_last_name = data.get('last_name') 
 
     @classmethod
     def get_all_guides(cls):
@@ -25,3 +26,16 @@ class Guide:
         return connectToMySQL('fixit').query_db(query, data)
     
     # Additional class methods as needed for updating, deleting, etc.
+    @classmethod
+    def get_all_guides_with_creators(cls):
+        query = """
+        SELECT guides.*, users.first_name, users.last_name 
+        FROM guides 
+        JOIN users ON guides.user_id = users.id;
+        """
+        results = connectToMySQL('fixit').query_db(query)
+        guides = []
+        for row in results:
+            guide = cls(row)
+            guides.append(guide)
+        return guides

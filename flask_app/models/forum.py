@@ -32,7 +32,7 @@ class Forum:
         SELECT forums.*, users.first_name, users.last_name FROM forums
         JOIN users ON forums.user_id = users.id;
         """
-        results = connectToMySQL('your_db_name').query_db(query)
+        results = connectToMySQL('fixit').query_db(query)
         forums_with_creators = []
         for row in results:
             forum_data = {
