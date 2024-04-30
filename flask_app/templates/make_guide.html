@@ -4,7 +4,7 @@
 
 <div class="container mt-5">
     <h2>Create a New Guide</h2>
-    <form action="/make_guide" method="POST">
+    <form action="/make_guide" method="POST" enctype="multipart/form-data">
         <div class="form-group">
             <label for="title">Guide Title:</label>
             <input type="text" class="form-control" id="title" name="title" required>
@@ -13,6 +13,7 @@
             <label for="content">Guide Content:</label>
             <textarea class="form-control" id="content" name="content" rows="5" required></textarea>
         </div>
+        <input type="file" name="image" accept="image/*">
         <button type="submit" class="btn btn-primary">Submit Guide</button>
     </form>
 </div>

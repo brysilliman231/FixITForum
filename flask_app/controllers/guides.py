@@ -2,6 +2,8 @@ from flask_app import app
 from flask_app.models.utilities import login_required
 from flask import render_template, request, redirect, session, flash,url_for
 from flask_app.models.guide import Guide
+import os
+
 
 @app.route('/guide/<int:id>')
 def guide(id):
@@ -46,3 +48,45 @@ def make_guide():
             return render_template('make_guide.html')
 
     return render_template('make_guide.html')
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/upload_guide_image', methods=['POST'])
+def upload_guide_image():
+    if 'image' not in request.files:
+        flash('No file part')
+        return redirect(request.url)
+    file = request.files['image']
+    if file.filename == '':
+        flash('No selected file')
+        return redirect(request.url)
+    if file and allowed_file(file.filename):
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        # Here, you might also want to update the database with the new image path
+        return redirect(url_for('dashboard')) 
+
+@app.route('/create_guide', methods=['POST'])
+def create_guide():
+    if 'image' in request.files:
+        file = request.files['image']
+        if file.filename != '':
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        else:
+            image_path = None
+    else:
+        image_path = None
+
+    guide_data = {
+        'title': request.form['title'],
+        'content': request.form['content'],
+        'user_id': session['user_id'],
+        'image_path': image_path
+    }
+    Guide.save(guide_data)
+    return redirect(url_for('dashboard'))

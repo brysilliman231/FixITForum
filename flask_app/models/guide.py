@@ -1,5 +1,4 @@
 from flask_app.config.mysqlconnection import connectToMySQL
-
 class Guide:
     def __init__(self, data):
         self.id = data['id']
@@ -9,7 +8,8 @@ class Guide:
         self.updated_at = data['updated_at']
         self.user_id = data['user_id']  
         self.creator_first_name = data.get('first_name') 
-        self.creator_last_name = data.get('last_name') 
+        self.creator_last_name = data.get('last_name')
+        self.image_path = data.get('image_path')
 
     @classmethod
     def get_all_guides(cls):
@@ -19,12 +19,11 @@ class Guide:
             print(f"Error fetching guides: {e}")
             return []
 
- 
     @classmethod
     def save(cls, data):
         query = """
-        INSERT INTO guides (title, content, user_id, created_at, updated_at)
-        VALUES (%(title)s, %(content)s, %(user_id)s, NOW(), NOW())
+        INSERT INTO guides (title, content, user_id, created_at, updated_at, image_path)
+        VALUES (%(title)s, %(content)s, %(user_id)s, NOW(), NOW(), %(image_path)s)
         """
         return connectToMySQL('fixit').query_db(query, data)
     
@@ -44,13 +43,12 @@ class Guide:
     
     @classmethod
     def get_by_id(cls, id):
-            query = "SELECT * FROM guides WHERE id = %(id)s;"
-            data = {'id': id}
-            results = connectToMySQL('fixit').query_db(query, data)
-            if results:
-                return cls(results[0]) 
-            return None
-    
+        query = "SELECT * FROM guides WHERE id = %(id)s;"
+        data = {'id': id}
+        results = connectToMySQL('fixit').query_db(query, data)
+        if results:
+            return cls(results[0]) 
+        return None
 
     @classmethod
     def get_by_key(cls, key):

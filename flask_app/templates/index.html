@@ -23,35 +23,34 @@
             <div class="mb-3">
                 <h2>Register:</h2>
             </div>
-            <div>   
-                <form action="/register" method="POST">
-                    <div class="form-group">
-                        <label for="first_name">First Name:</label>
-                        <input type="text" class="form-control" name="first_name" id="first_name">
-                    </div>
-                    <div class="form-group">
-                        <label for="last_name">Last Name:</label>
-                        <input type="text" class="form-control" name="last_name" id="last_name">
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address:</label>
-                        <input type="email" class="form-control" name="email" id="email">
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password:</label>
-                        <input type="password" class="form-control" name="password" id="password">
-                    </div>
-                    <div class="form-group">
-                        <label for="confirm_password">Confirm Password:</label>
-                        <input type="password" class="form-control" name="confirm_password" id="confirm_password">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Register</button>
-                </form>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <h2>Login:</h2>
+            <form action="/register" method="POST">
+                <div class="form-group">
+                    <label for="first_name">First Name:</label>
+                    <input type="text" class="form-control" name="first_name" id="first_name">
                 </div>
+                <div class="form-group">
+                    <label for="last_name">Last Name:</label>
+                    <input type="text" class="form-control" name="last_name" id="last_name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email Address:</label>
+                    <input type="email" class="form-control" name="email" id="email">
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" class="form-control" name="password" id="password">
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirm Password:</label>
+                    <input type="password" class="form-control" name="confirm_password" id="confirm_password">
+                </div>
+                <button type="submit" class="btn btn-primary">Register</button>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <div class="mb-3">
+                <h2>Login:</h2>
+            </form>
                 <form action="/login" method="POST">
                     <div class="form-group">
                         <label for="email">Email Address:</label>
@@ -65,16 +64,21 @@
                 </form>
             </div>
         </div>
-        <div class="flash_wrapper mt-4">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-warning" role="alert">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        </div>
     </div>
+    <!-- Button to go to the dashboard -->
+    <div class="text-center mt-4">
+        <a href="{{ url_for('dashboard') }}" class="btn btn-info">Go to Dashboard</a>
+    </div>
+    <div class="flash_wrapper mt-4">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+</div>
 {% endblock %}

@@ -28,7 +28,7 @@ def make_forum():
             "user_id": session['user_id']  # Retrieved from the logged-in user's session
         }
         Forum.save(new_forum_data)
-        return redirect('/forums')
+        return redirect('/dashboard')
 
     return render_template('make_forum.html')
 

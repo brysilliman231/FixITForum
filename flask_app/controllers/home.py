@@ -26,7 +26,6 @@ def index():
 
 
 @app.route('/dashboard')
-@login_required
 def dashboard():
     logging.debug("Loading the dashboard")
     try:
@@ -37,20 +36,6 @@ def dashboard():
         logging.error(f"Failed to load dashboard data: {e}")
         flash('There was a problem loading the dashboard.')
         return render_template('dashboard.html', guides=[], forums=[])
-
-@app.route('/profile/<int:user_id>')
-def profile(user_id):
-    if 'user_id' not in session or session['user_id'] != user_id:
-        flash("You are not authorized to view this page.")
-        return redirect('/login')
-    
-    user = User.get_by_id({'id': user_id})
-    if not user:
-        flash("User not found.")
-        return redirect('/dashboard')
-    
-    return render_template('profile.html', user=user)
-
 
 
 @app.route("/register", methods=["POST"])

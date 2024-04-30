@@ -29,12 +29,20 @@
             {% endif %}
             <div class="list-group">
                 {% for guide in guides %}
-                <a href="{{ url_for('guide', id=guide.id) }}" class="list-group-item list-group-item-action">
-                    {{ guide.title }}
-                </a>
-            {% else %}
-                <p>No guides available.</p>
-            {% endfor %}
+                    <div class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                            <img src="{{ url_for('static', filename=guide.image_path) }}" alt="Guide Image" style="height: 100px; width: auto; margin-right: 20px;">
+                            <div>
+                                <a href="{{ url_for('guide', id=guide.id) }}">
+                                    <h5 class="mb-1">{{ guide.title }}</h5>
+                                </a>
+                                <p class="mb-1">{{ guide.content }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>No guides available.</p>
+                {% endfor %}
             </div>
         </div>
         <div class="col-md-6">
