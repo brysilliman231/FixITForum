@@ -1,3 +1,4 @@
+from flask_app.models.utilities import login_required
 from flask_app.models.user import User
 from flask_app.models.forum import Forum
 from flask_app.models.guide import Guide
@@ -9,28 +10,28 @@ bcrypt = Bcrypt(app)
 
 @app.route('/')
 def index():
+    # Log the current session state
+    logging.debug(f"Current session state: {session}")
+
     if 'user_id' not in session:
         # If no user is logged in, render the 'index.html' template
+        logging.debug("No user logged in, displaying index page.")
         return render_template('index.html')
     else:
-        # If a user is logged in, redirect to the dashboard or another appropriate page
+        # If a user is logged in, redirect to the dashboard
+        logging.debug(f"User logged in with ID {session['user_id']}, redirecting to dashboard.")
         return redirect('/dashboard')
     
-@app.route('/')
-def index():
-    logging.debug(f"Current session state: {session}")
-    return "Welcome to the Index Page"
+
+
 
 @app.route('/dashboard')
+@login_required
 def dashboard():
-    if 'user_id' not in session:
-        # If no user is logged in, redirect to the login page
-        return redirect('/')
-    
     # Fetch the guides and forums from the database
     guides = Guide.get_all_guides()  # replace with actual database call
     forums = Forum.get_all_forums()  # replace with actual database call
-    
+
     return render_template('dashboard.html', guides=guides, forums=forums)
 
 @app.route('/profile/<int:user_id>')
@@ -109,6 +110,7 @@ def logout():
     return redirect('/index')  #
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
 def edit_profile():
     if 'user_id' not in session:
         flash("Please log in to view this page.")

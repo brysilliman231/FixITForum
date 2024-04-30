@@ -1,4 +1,5 @@
 from flask_app import app
+from flask_app.models.utilities import login_required
 from flask import render_template, request, redirect, session, flash
 from flask_app.models.guide import Guide
 
@@ -10,6 +11,7 @@ def guides():
     return render_template('guides.html', guides=guides)
 
 @app.route('/make_guide', methods=['GET', 'POST'])
+@login_required
 def make_guide():
     if 'user_id' not in session:
         flash('Please log in to access this feature.')

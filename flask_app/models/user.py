@@ -14,6 +14,7 @@ class User:
         self.created_at = data["created_at"]
         self.updated_at = data["updated_at"]
 
+
     @classmethod
     def save(cls, data):
         query = "INSERT INTO users (first_name, last_name, email, password) VALUES (%(first_name)s, %(last_name)s, %(email)s, %(password)s);"
@@ -67,4 +68,3 @@ class User:
         if len(user['password']) < 8:
             flash("Password must be greater than 8 characters long")
         return is_valid
-    

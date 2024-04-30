@@ -1,4 +1,5 @@
 from flask_app import app
+from flask_app.models.utilities import login_required
 from flask import render_template, request, redirect, session, flash
 from flask_app.models.forum import Forum
 
@@ -12,6 +13,7 @@ def forums():
     return render_template('forums.html', forums=forums)
 
 @app.route('/make_forum', methods=['GET', 'POST'])
+@login_required
 def make_forum():
     if 'user_id' not in session:
         flash('Please log in to access this feature.')
@@ -30,3 +32,4 @@ def make_forum():
         return redirect('/forums')
 
     return render_template('make_forum.html')
+    
