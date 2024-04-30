@@ -2,19 +2,12 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-3">Forums</h2>
-    <div class="list-group">
-        {% for forum in forums %}
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ forum.title }}</h5>
-                    <small>Created by: {{ forum.creator_first_name }} {{ forum.creator_last_name }}</small>
-                </div>
-                <p class="mb-1">{{ forum.description }}</p>
-            </a>
-        {% else %}
-            <p>No forums to display.</p>
-        {% endfor %}
+    <div class="list-group-item flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ forum.title }}</h5>
+            <small>Created by: {{ forum.creator_first_name }} {{ forum.creator_last_name }}</small>
+        </div>
+        <p class="mb-1">{{ forum.description }}</p>
     </div>
 </div>
 {% endblock %}

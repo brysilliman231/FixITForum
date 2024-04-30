@@ -5,9 +5,9 @@ from flask_app.models.guide import Guide
 
 @app.route('/guide/<int:id>')
 def guide(id):
-    guide = Guide.get_by_id(id)  # Fetch the guide from the database
+    guide = Guide.get_by_id(id)  # Fetch the guide by its ID
     if guide:
-        return render_template('guides.html', guide=guide)
+        return render_template('guides.html', guide=guide)  # Consider renaming to guide_detail.html
     else:
         flash('Guide not found.')
         return redirect(url_for('dashboard'))

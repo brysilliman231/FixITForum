@@ -5,6 +5,10 @@ from flask_app.models.forum import Forum
 
 @app.route('/forum/<int:id>')
 def forum(id):
+    forum = Forum.get_by_id(id)  # Fetch the forum by its ID
+    if not forum:
+        flash('Forum not found.')
+        return redirect(url_for('dashboard'))
     return render_template('forums.html', forum=forum)
 
 @app.route('/make_forum', methods=['GET', 'POST'])

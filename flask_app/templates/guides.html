@@ -2,19 +2,13 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h2 class="mb-3">Guides</h2>
-    <div class="list-group">
-        {% for guide in guides %}
-            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
-                <div class="d-flex w-100 justify-content-between">
-                    <h5 class="mb-1">{{ guide.title }}</h5>
-                    <small>Created by: {{ guide.creator_first_name }} {{ guide.creator_last_name }}</small>
-                </div>
-                <p class="mb-1">{{ guide.content }}</p>
-            </a>
-        {% else %}
-            <p>No guides to display.</p>
-        {% endfor %}
+    <h2 class="mb-3">{{ guide.title }}</h2>
+    <div class="list-group-item flex-column align-items-start">
+        <div class="d-flex w-100 justify-content-between">
+            <h5 class="mb-1">{{ guide.title }}</h5>
+            <small>Created by: {{ guide.creator_first_name }} {{ guide.creator_last_name }}</small>
+        </div>
+        <p class="mb-1">{{ guide.content }}</p>
     </div>
 </div>
 {% endblock %}
