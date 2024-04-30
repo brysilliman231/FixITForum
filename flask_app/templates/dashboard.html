@@ -9,10 +9,10 @@
                 <div>
                     <!-- Only show logout and edit profile if user is logged in -->
                     {% if 'user_id' in session and session['user_id'] %}
-                        <a href="/logout" class="btn btn-secondary">Logout</a>
-                        <a href="/edit_profile" class="btn btn-info">Edit Profile</a>
+                        <a href="{{ url_for('logout') }}" class="btn btn-secondary">Logout</a>
+                        <a href="{{ url_for('edit_profile') }}" class="btn btn-info">Edit Profile</a>
                     {% else %}
-                        <a href="/login" class="btn btn-primary">Login</a>
+                        <a href="{{ url_for('login') }}" class="btn btn-primary">Login</a>
                     {% endif %}
                 </div>
             </div>
@@ -32,7 +32,9 @@
                 <a href="{{ url_for('guide', id=guide.id) }}" class="list-group-item list-group-item-action">
                     {{ guide.title }}
                 </a>
-                {% endfor %}
+            {% else %}
+                <p>No guides available.</p>
+            {% endfor %}
             </div>
         </div>
         <div class="col-md-6">
@@ -43,10 +45,13 @@
                 <a href="{{ url_for('make_forum') }}" class="btn btn-success">Create Forum</a>
             {% endif %}
             <div class="list-group">
-                <!-- Loop through forums in the database and insert here -->
-                <a href="#" class="list-group-item list-group-item-action">Forum 1</a>
-                <a href="#" class="list-group-item list-group-item-action">Forum 2</a>
-                <!-- More forums -->
+                {% for forum in forums %}
+                    <a href="{{ url_for('forum', id=forum.id) }}" class="list-group-item list-group-item-action">
+                        {{ forum.title }}
+                    </a>
+                {% else %}
+                    <p>No forums available.</p>
+                {% endfor %}
             </div>
         </div>
     </div>

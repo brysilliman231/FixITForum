@@ -3,7 +3,7 @@ from flask_app.models.user import User
 from flask_app.models.forum import Forum
 from flask_app.models.guide import Guide
 from flask_app import app
-from flask import render_template, request, session, redirect, flash
+from flask import render_template, request, session, redirect, flash, url_for
 from flask_bcrypt import Bcrypt
 import logging
 bcrypt = Bcrypt(app)
@@ -28,11 +28,15 @@ def index():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    # Fetch the guides and forums from the database
-    guides = Guide.get_all_guides()  # replace with actual database call
-    forums = Forum.get_all_forums()  # replace with actual database call
-
-    return render_template('dashboard.html', guides=guides, forums=forums)
+    logging.debug("Loading the dashboard")
+    try:
+        guides = Guide.get_all_guides()
+        forums = Forum.get_all_forums()
+        return render_template('dashboard.html', guides=guides, forums=forums)
+    except Exception as e:
+        logging.error(f"Failed to load dashboard data: {e}")
+        flash('There was a problem loading the dashboard.')
+        return render_template('dashboard.html', guides=[], forums=[])
 
 @app.route('/profile/<int:user_id>')
 def profile(user_id):
@@ -51,7 +55,7 @@ def profile(user_id):
 
 @app.route("/register", methods=["POST"])
 def register():
-    # Validate user input
+   
     if not User.validate_user(request.form):
         # If validation fails, redirect back to the home page to display flash messages
         return redirect('/')
@@ -81,33 +85,38 @@ def register():
     
     return redirect('/dashboard')
 
-@app.route('/login', methods=['POST'])
-def login():
-    # Validate login information
-    if not User.validate_user_login(request.form):
-        return redirect('/')
-    
-    # Attempt to retrieve the user by email
-    user_in_db = User.get_by_email({'email': request.form['email']})
-    if not user_in_db:
-        flash("Invalid Email/Password")
-        return redirect('/')
-    
-    # Check password hash against entered password
-    if not bcrypt.check_password_hash(user_in_db.password, request.form['password']):
-        flash("Invalid Email/Password")
-        return redirect('/')
-    
-    # If the passwords matched, we set the user_id into session
-    session['user_id'] = user_in_db.id
-    
-    return redirect('/dashboard')
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        # Validate login information
+        if not User.validate_user_login(request.form):
+            flash("Invalid input. Please try again.")
+            return redirect(url_for('login'))  # Redirect to the login route which renders index.html
+
+        # Attempt to retrieve the user by email
+        user_in_db = User.get_by_email({'email': request.form['email']})
+        if not user_in_db:
+            flash("Invalid Email/Password")
+            return redirect(url_for('login'))
+
+        # Check password hash against entered password
+        if not bcrypt.check_password_hash(user_in_db.password, request.form['password']):
+            flash("Invalid Email/Password")
+            return redirect(url_for('login'))
+
+        # If the passwords matched, we set the user_id into session
+        session['user_id'] = user_in_db.id
+        flash("You are now logged in!")
+        return redirect(url_for('dashboard'))
+    else:
+        # If it's a GET request, just render the login page which is index.html
+        return render_template('index.html')
 @app.route('/logout')
 def logout():
     session.clear()  # This clears the session, logging the user out
     flash("You have been logged out successfully.")
-    return redirect('/index')  #
+    return redirect('/')  #
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required

@@ -1,32 +1,48 @@
 from flask_app import app
 from flask_app.models.utilities import login_required
-from flask import render_template, request, redirect, session, flash
+from flask import render_template, request, redirect, session, flash,url_for
 from flask_app.models.guide import Guide
 
-@app.route('/guides')
-def guides():
-    if 'user_id' not in session:
-        return redirect('/login')  # Ensure the user is logged in
-    guides = Guide.get_all_guides_with_creators()
-    return render_template('guides.html', guides=guides)
+@app.route('/guide/<int:id>')
+def guide(id):
+    guide = Guide.get_by_id(id)  # Fetch the guide from the database
+    if guide:
+        return render_template('guides.html', guide=guide)
+    else:
+        flash('Guide not found.')
+        return redirect(url_for('dashboard'))
+    
+@app.route('/guide/<key>')
+def show_guide(key):
+    guide = Guide.get_by_key(key)
+    if guide is not None:
+        return render_template('guides.html', guide=guide)
+    else:
+        flash('Guide not found.')
+        return redirect(url_for('dashboard'))
 
 @app.route('/make_guide', methods=['GET', 'POST'])
 @login_required
 def make_guide():
-    if 'user_id' not in session:
-        flash('Please log in to access this feature.')
-        return redirect('/')
-
     if request.method == 'POST':
         # Assume there's validation before saving
-        # ... Your form validation logic ...
+        # Here you should also validate the data from the form
+        if not request.form['title'] or not request.form['content']:
+            flash("Please fill in all fields.")
+            return render_template('make_guide.html')
 
         new_guide_data = {
             'title': request.form['title'],
             'content': request.form['content'],
-            # Add other form fields as necessary
+            'user_id': session['user_id']  # Securely getting user_id from session
         }
-        Guide.save(new_guide_data)
-        return redirect('/guides')
+        
+        try:
+            Guide.save(new_guide_data)
+            flash("Guide created successfully!")
+            return redirect(url_for('guides'))  # Assuming you have a 'guides' endpoint to display guides
+        except Exception as e:
+            flash(f"An error occurred while saving the guide: {str(e)}")
+            return render_template('make_guide.html')
 
     return render_template('make_guide.html')

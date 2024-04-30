@@ -1,16 +1,11 @@
 from flask_app import app
 from flask_app.models.utilities import login_required
-from flask import render_template, request, redirect, session, flash
+from flask import render_template, request, redirect, session, flash,url_for
 from flask_app.models.forum import Forum
 
-@app.route('/forums')
-def forums():
-    if 'user_id' not in session:
-        flash('Please log in to view the forums.')
-        return redirect('/')
-
-    forums = Forum.get_all_forums_with_creators()
-    return render_template('forums.html', forums=forums)
+@app.route('/forum/<int:id>')
+def forum(id):
+    return render_template('forums.html', forum=forum)
 
 @app.route('/make_forum', methods=['GET', 'POST'])
 @login_required
@@ -32,4 +27,13 @@ def make_forum():
         return redirect('/forums')
 
     return render_template('make_forum.html')
+
+@app.route('/forum/<key>')
+def show_forum(key):
+    forum = Forum.get_by_key(key)
+    if forum is not None:
+        return render_template('forums.html', forum=forum)
+    else:
+        flash('Forum not found.')
+        return redirect(url_for('dashboard'))
     
