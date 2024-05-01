@@ -42,14 +42,14 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
-@app.route('/upload_guide_image', methods=['POST'])
+@app.route('/upload_guide_image', methods=['POST'])  #currently redundant and will be removed, try to find a way to incorporate this function
 def upload_guide_image():
     if 'image' not in request.files:
         flash('No file part')
         return redirect(request.url)
     file = request.files['image']
     if file.filename == '':
-        flash('No selected file')
+        flash('No selected file')    #maybe look to establish a file path for the naming
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
