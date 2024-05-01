@@ -19,8 +19,8 @@ def make_forum():
         return redirect('/')
 
     if request.method == 'POST':
-        # Assume there's validation before saving
-        # ... Your form validation logic ...
+  
+
             
         new_forum_data = {
             "title": request.form['title'],
@@ -41,3 +41,40 @@ def show_forum(key):
         flash('Forum not found.')
         return redirect(url_for('dashboard'))
     
+
+@app.route('/forums/<int:id>/update', methods=['POST',"GET"])
+@login_required
+def update_forum(id):
+    forum = Forum.get_by_id(id)
+    if forum.user_id != session['user_id']:
+        flash("You are not authorized to update this forum.")
+        return redirect(url_for('dashboard'))
+    
+    update_data = {
+        'forum_id': id,
+        'title': request.form['title'],
+        'description': request.form['description']
+    }
+    Forum.update(id, update_data)
+    return redirect(url_for('dashboard'))
+    
+
+@app.route('/forums/<int:id>/delete', methods=['POST',"GET"])
+@login_required
+def delete_forum(id):
+    forum = Forum.get_by_id(id)
+    if forum.user_id != session['user_id']:
+        flash("You are not authorized to delete this forum.")
+        return redirect(url_for('dashboard'))
+    
+    Forum.delete(id)
+    return redirect(url_for('dashboard'))
+
+@app.route('/forums/<int:id>/edit')
+@login_required
+def edit_forum(id):
+    forum = Forum.get_by_id(id)
+    if not forum or forum.user_id != session['user_id']:
+        flash("You are not authorized to edit this forum.")
+        return redirect(url_for('dashboard'))
+    return render_template('edit_forum.html', forum=forum)

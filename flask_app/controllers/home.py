@@ -42,30 +42,27 @@ def dashboard():
 def register():
    
     if not User.validate_user(request.form):
-        # If validation fails, redirect back to the home page to display flash messages
+      
         return redirect('/')
     
-    # Check if the user already exists
+
     existing_user = User.get_by_email({'email': request.form['email']})
     if existing_user:
         flash("Email already taken.")
         return redirect('/')
-    
-    # Hash the password
+
     pw_hash = bcrypt.generate_password_hash(request.form['password'])
-    
-    # Create new user data dictionary
+
     new_user_data = {
         "first_name": request.form['first_name'],
         "last_name": request.form['last_name'],
         "email": request.form['email'],
-        "password": pw_hash  # Store the hashed password
+        "password": pw_hash  
     }
 
-    # Save the user to the database
+
     user_id = User.save(new_user_data)
 
-    # Store user id in session
     session['user_id'] = user_id
     
     return redirect('/dashboard')
@@ -74,32 +71,30 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        # Validate login information
+ 
         if not User.validate_user_login(request.form):
             flash("Invalid input. Please try again.")
-            return redirect(url_for('login'))  # Redirect to the login route which renders index.html
+            return redirect(url_for('login'))  
 
-        # Attempt to retrieve the user by email
         user_in_db = User.get_by_email({'email': request.form['email']})
         if not user_in_db:
             flash("Invalid Email/Password")
             return redirect(url_for('login'))
 
-        # Check password hash against entered password
+     
         if not bcrypt.check_password_hash(user_in_db.password, request.form['password']):
             flash("Invalid Email/Password")
             return redirect(url_for('login'))
 
-        # If the passwords matched, we set the user_id into session
         session['user_id'] = user_in_db.id
         flash("You are now logged in!")
         return redirect(url_for('dashboard'))
     else:
-        # If it's a GET request, just render the login page which is index.html
+     
         return render_template('index.html')
 @app.route('/logout')
 def logout():
-    session.clear()  # This clears the session, logging the user out
+    session.clear() 
     flash("You have been logged out successfully.")
     return redirect('/')  #
 
@@ -121,5 +116,5 @@ def edit_profile():
         flash("Your profile has been updated.")
         return redirect('/dashboard')
 
-    user = User.get_by_id({'id': session['user_id']})  # Assuming there's a method to fetch user by ID
+    user = User.get_by_id({'id': session['user_id']}) 
     return render_template('edit_profile.html', user=user)

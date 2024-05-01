@@ -58,3 +58,17 @@ class Guide:
         if results:
             return cls(results[0])  # Assuming the constructor can initialize from a dictionary
         return None
+    
+    @classmethod
+    def update(cls, guide_id, update_data):
+        query = """
+        UPDATE guides SET title=%(title)s, content=%(content)s, image_path=%(image_path)s, updated_at=NOW()
+        WHERE id = %(guide_id)s;
+        """
+        return connectToMySQL('fixit').query_db(query, update_data)
+
+    @classmethod
+    def delete(cls, guide_id):
+        query = "DELETE FROM guides WHERE id = %(guide_id)s;"
+        data = {'guide_id': guide_id}
+        return connectToMySQL('fixit').query_db(query, data)

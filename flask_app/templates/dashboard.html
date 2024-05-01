@@ -19,48 +19,54 @@
         </div>
     </div>
 
-    <div class="row">
-        <div class="col-md-6">
+    <!-- Guides Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
             <h2>Guides</h2>
-            <input type="text" class="form-control mb-3" placeholder="Guide Search Bar">
-            <!-- Only show create guide button if user is logged in -->
-            {% if 'user_id' in session and session['user_id'] %}
-                <a href="{{ url_for('make_guide') }}" class="btn btn-primary">Create Guide</a>
-            {% endif %}
-            <div class="list-group">
-                {% for guide in guides %}
-                    <div class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                            <img src="{{ url_for('static', filename=guide.image_path) }}" alt="Guide Image" style="height: 100px; width: auto; margin-right: 20px;">
-                            <div>
-                                <a href="{{ url_for('guide', id=guide.id) }}">
-                                    <h5 class="mb-1">{{ guide.title }}</h5>
-                                </a>
-                                <p class="mb-1">{{ guide.content }}</p>
-                            </div>
-                        </div>
-                    </div>
-                {% else %}
-                    <p>No guides available.</p>
-                {% endfor %}
+            {% for guide in guides %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    {% if guide.image_path %}
+                    <img src="{{ url_for('static', filename=guide.image_path) }}" alt="Guide Image" class="float-left mr-3" style="width: 100px; height: auto;">
+                    {% endif %}
+                    <h5 class="card-title">{{ guide.title }}</h5>
+                    <p class="card-text">{{ guide.content }}</p>
+                    <!-- Edit and Delete buttons for the guide, shown only to the creator -->
+                    {% if 'user_id' in session and session['user_id'] == guide.user_id %}
+                    <a href="{{ url_for('update_guide', id=guide.id) }}" class="btn btn-primary">Edit</a>
+                    <form action="{{ url_for('delete_guide', id=guide.id) }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
             </div>
+            {% else %}
+            <p>No guides available.</p>
+            {% endfor %}
         </div>
-        <div class="col-md-6">
+    </div>
+
+    <!-- Forums Section -->
+    <div class="row">
+        <div class="col-md-12">
             <h2>Forums</h2>
-            <input type="text" class="form-control mb-3" placeholder="Forum Search Bar">
-            <!-- Only show create forum button if user is logged in -->
-            {% if 'user_id' in session and session['user_id'] %}
-                <a href="{{ url_for('make_forum') }}" class="btn btn-success">Create Forum</a>
-            {% endif %}
-            <div class="list-group">
-                {% for forum in forums %}
-                    <a href="{{ url_for('forum', id=forum.id) }}" class="list-group-item list-group-item-action">
-                        {{ forum.title }}
-                    </a>
-                {% else %}
-                    <p>No forums available.</p>
-                {% endfor %}
+            {% for forum in forums %}
+            <div class="card mb-2">
+                <div class="card-body">
+                    <h5 class="card-title">{{ forum.title }}</h5>
+                    <p class="card-text">{{ forum.description }}</p>
+                    <!-- Edit and Delete buttons for the forum, shown only to the creator -->
+                    {% if 'user_id' in session and session['user_id'] == forum.user_id %}
+                    <a href="{{ url_for('update_forum', id=forum.id) }}" class="btn btn-primary">Edit</a>
+                    <form action="{{ url_for('delete_forum', id=forum.id) }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                    {% endif %}
+                </div>
             </div>
+            {% else %}
+            <p>No forums available.</p>
+            {% endfor %}
         </div>
     </div>
 </div>

@@ -63,5 +63,19 @@ class Forum:
         data = {'key': key}
         results = connectToMySQL('your_db_name').query_db(query, data)
         if results:
-            return cls(results[0])  # Assuming the constructor can initialize from a dictionary
+            return cls(results[0])  
         return None
+    
+    @classmethod
+    def update(cls, forum_id, update_data):
+        query = """
+        UPDATE forums SET title=%(title)s, description=%(description)s, updated_at=NOW()
+        WHERE id = %(forum_id)s;
+        """
+        return connectToMySQL('fixit').query_db(query, update_data)
+
+    @classmethod
+    def delete(cls, forum_id):
+        query = "DELETE FROM forums WHERE id = %(forum_id)s;"
+        data = {'forum_id': forum_id}
+        return connectToMySQL('fixit').query_db(query, data)
